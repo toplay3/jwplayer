@@ -1,5 +1,6 @@
 /* jshint node: true */
 var webpack = require('webpack');
+var path = require('path');
 var env = process.env;
 var _ = require('lodash');
 var argv = require('minimist')(process.argv.slice(2));
@@ -140,7 +141,11 @@ var multiConfig = _.compact(_.map([
                     loader: 'file-loader?name=[name].[ext]'
                 },
                 {
-
+                    // test: /\.js$/,
+                    include: [
+                        path.resolve(__dirname, 'src/js/utils/quality-labels.js')
+                    ],
+                    loader: 'babel-loader'
                 }
             ]
         }

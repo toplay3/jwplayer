@@ -20,13 +20,13 @@ define([
             return '';
         }
 
-        var bandwidthString = toKbps(bandwidth) + ' kbps';
+        var bandwidthString = `${toKbps(bandwidth)} kbps`;
         var label = bandwidthString;
 
         if (height) {
-            label = height + 'p';
+            label = `${height}p`;
             if (bandwidth && redundant) {
-                label += ' (' + bandwidthString + ')';
+                label += ` (${bandwidthString})`;
             }
         }
 
