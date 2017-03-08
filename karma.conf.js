@@ -1,5 +1,7 @@
 /* eslint-env node */
 /* eslint no-process-env: 0 */
+var webpack = require('webpack');
+var webpackConfig = require('./webpack.config.js');
 
 module.exports = function( config ) {
     var env = process.env;
@@ -30,9 +32,9 @@ module.exports = function( config ) {
             'karma-firefox-launcher',
             'karma-safari-launcher',
             'karma-browserstack-launcher',
-            'karma-sinon',
+            'karma-webpack'
         ],
-        frameworks: ['requirejs', 'qunit', 'sinon'],
+        frameworks: ['requirejs', 'qunit'],
         reporters: testReporters,
         port: serverPort, // web server port
         colors: !isJenkins, // colors in the output (reporters and logs)
@@ -80,44 +82,101 @@ module.exports = function( config ) {
 
         files : [
             //3rd Party Code
-            { pattern: 'node_modules/handlebars/dist/*.js', included: false },
-            { pattern: 'node_modules/handlebars-loader/*.js', included: false },
-            { pattern: 'node_modules/jquery/dist/*.js', included: false },
+            // { pattern: 'node_modules/handlebars/dist/*.js', included: false },
+            // { pattern: 'node_modules/handlebars-loader/*.js', included: false },
+            // { pattern: 'node_modules/jquery/dist/*.js', included: false },
             { pattern: 'node_modules/phantomjs-polyfill/*.js', included: false },
             { pattern: 'node_modules/intersection-observer/intersection-observer.js', included: false },
-            { pattern: 'node_modules/requirejs/require.js', included: true },
-            { pattern: 'node_modules/requirejs-handlebars/*.js', included: false },
-            { pattern: 'node_modules/requirejs-text/*.js', included: false },
-            { pattern: 'node_modules/simple-style-loader/addStyles.js', included: false },
-            { pattern: 'node_modules/underscore/*.js', included: false },
-            { pattern: 'node_modules/sinon/**/*.js', included: false },
+            // { pattern: 'node_modules/requirejs/require.js', included: true },
+            // { pattern: 'node_modules/requirejs-handlebars/*.js', included: false },
+            // { pattern: 'node_modules/requirejs-text/*.js', included: false },
+            // { pattern: 'node_modules/simple-style-loader/addStyles.js', included: false },
+            // { pattern: 'node_modules/underscore/*.js', included: false },
+            // { pattern: 'node_modules/sinon/**/*.js', included: false },
 
             // Require Config
             { pattern: 'test/config.js', included: true },
 
             // Source
-            { pattern: 'src/js/**/*.js', included: false },
-            { pattern: 'src/css/**/*.less', included: false },
-            { pattern: 'src/templates/**/*.html', included: false },
+            // { pattern: 'src/js/**/*.js', included: false },
+            // { pattern: 'src/css/**/*.less', included: false },
+            // { pattern: 'src/templates/**/*.html', included: false },
 
             // Tests
-            { pattern: 'test/data/*.js', included: false },
-            { pattern: 'test/data/*.json', included: false },
-            { pattern: 'test/data/*.xml', included: false },
-            { pattern: 'test/mock/*.js', included: false },
-            { pattern: 'test/unit/*.js', included: false },
+            // { pattern: 'test/data/*.js', included: false },
+            // { pattern: 'test/data/*.json', included: false },
+            // { pattern: 'test/data/*.xml', included: false },
+            // { pattern: 'test/mock/*.js', included: false },
+            // { pattern: 'test/unit/*.js', included: false },
+            { pattern: 'test-context.js' },
         ],
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
             // source files, that you want to generate coverage for
-            'src/js/*.js': ['coverage'],
-            'src/js/!(polyfill)/*.js': ['coverage']
+            'test-context.js': ['webpack']
+            // 'src/js/*.js': ['webpack', 'coverage'],
+            // 'src/js/!(polyfill)/*.js': ['webpack']
         },
         coverageReporter: {
             type: 'html',
             dir: 'reports/coverage'
+        },
+        webpack: {
+            resolve: {
+                modulesDirectories: [
+                    'src/js/',
+                    'src',
+                    'node_modules'
+                ],
+                alias: {
+                    'test/underscore': '../../node_modules/underscore/underscore.js',
+                    'jquery': '../../node_modules/jquery/dist/jquery.js',
+                    'sinon': '../../node_modules/sinon/pkg/sinon.js',
+                    'data': '../../test/data',
+                    'mock': '../../test/mock'
+                }
+            },
+            module: {
+                loaders: [
+                    {
+                        test: /\.less$/,
+                        loaders: [
+                            'simple-style-loader',
+                            'css',
+                            'autoprefixer?browsers=' + encodeURIComponent('> 1%'),
+                            'less?compress',
+                        ]
+                    },
+                    {
+                        test: /\.html$/,
+                        include: [
+                            /src/,
+                        ],
+                        loader: 'handlebars-loader'
+                    },
+                    {
+                        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+                        loader: 'file-loader?name=[name].[ext]'
+                    },
+                    {
+                        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+                        loader: 'file-loader?name=[name].[ext]'
+                    },
+                    {
+                        test: /\.js/,
+                        exclude: /node_modules/,
+                        query: {
+                            presets: ['es2015']
+                        },
+                        loader: 'babel-loader'
+                    }
+                ],
+                noParse: [
+                    /node_modules\/sinon\//
+                ]
+            }
         },
 
         // number of browsers to run at once

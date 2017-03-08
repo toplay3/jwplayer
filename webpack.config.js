@@ -4,7 +4,6 @@ var path = require('path');
 var env = process.env;
 var _ = require('lodash');
 var argv = require('minimist')(process.argv.slice(2));
-var fs = require('fs');
 
 var packageInfo = require('./package.json');
 var flashVersion = 11.2;

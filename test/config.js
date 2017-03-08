@@ -85,7 +85,7 @@
             'phantomjs-polyfill': components + '/phantomjs-polyfill/bind-polyfill',
             'intersection-observer': components + '/intersection-observer/intersection-observer',
             'simple-style-loader': components + '/simple-style-loader',
-            'sinon': components + '/sinon/pkg/sinon-1.17.6',
+            'sinon': components + '/sinon/pkg/sinon',
             // always use test/underscore in test scripts
             'test/underscore': components + '/underscore/underscore',
 
