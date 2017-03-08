@@ -15,6 +15,9 @@
         "__DEBUG__": true,
         "__BUILD_VERSION__": true
     },
+    "parserOptions": {
+        "sourceType": "module"
+    },
     "extends": "eslint:recommended",
     "rules": {
         "comma-dangle": 0,
