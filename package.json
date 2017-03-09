@@ -53,6 +53,7 @@
     "loader-utils": "0.2.14",
     "lodash": "4.11.1",
     "node-libs-browser": "1.0.0",
+    "phantom": "^2.1.1",
     "phantomjs-polyfill": "0.0.2",
     "phantomjs-prebuilt": "2.1.7",
     "qunitjs": "1.23.1",

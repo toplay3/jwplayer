@@ -19,21 +19,7 @@ module.exports = function( config ) {
 
     config.set({
 
-        basePath: '.',
-
-        plugins: [
-            'karma-coverage',
-            'karma-requirejs',
-            'karma-qunit',
-            'karma-junit-reporter',
-            'karma-spec-reporter',
-            'karma-phantomjs-launcher',
-            'karma-chrome-launcher',
-            'karma-firefox-launcher',
-            'karma-safari-launcher',
-            'karma-browserstack-launcher',
-            'karma-webpack'
-        ],
+        baseUrl: '.',
         frameworks: ['requirejs', 'qunit'],
         reporters: testReporters,
         port: serverPort, // web server port
@@ -50,8 +36,8 @@ module.exports = function( config ) {
         // config.LOG_ERROR
         // config.LOG_WARN
         // config.LOG_INFO
-        // config.LOG_DEBUG // LOG_DEBUG is useful for writing karma server network status messages to stdio
-        logLevel: config.LOG_INFO,
+        logLevel: config.LOG_DEBUG, // LOG_DEBUG is useful for writing karma server network status messages to stdio
+        // logLevel: config.LOG_INFO,
 
         browsers: [
             'PhantomJS',
@@ -87,7 +73,7 @@ module.exports = function( config ) {
             // { pattern: 'node_modules/jquery/dist/*.js', included: false },
             { pattern: 'node_modules/phantomjs-polyfill/*.js', included: false },
             { pattern: 'node_modules/intersection-observer/intersection-observer.js', included: false },
-            // { pattern: 'node_modules/requirejs/require.js', included: true },
+            { pattern: 'node_modules/requirejs/require.js', included: true },
             // { pattern: 'node_modules/requirejs-handlebars/*.js', included: false },
             // { pattern: 'node_modules/requirejs-text/*.js', included: false },
             // { pattern: 'node_modules/simple-style-loader/addStyles.js', included: false },
@@ -115,7 +101,7 @@ module.exports = function( config ) {
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
             // source files, that you want to generate coverage for
-            'test-context.js': ['webpack']
+            'test-context.js': ['webpack'],
             // 'src/js/*.js': ['webpack', 'coverage'],
             // 'src/js/!(polyfill)/*.js': ['webpack']
         },
@@ -135,7 +121,7 @@ module.exports = function( config ) {
                     'jquery': '../../node_modules/jquery/dist/jquery.js',
                     'sinon': '../../node_modules/sinon/pkg/sinon.js',
                     'data': '../../test/data',
-                    'mock': '../../test/mock'
+                    'mock': '../../test/mock',
                 }
             },
             module: {
@@ -174,11 +160,18 @@ module.exports = function( config ) {
                     }
                 ],
                 noParse: [
-                    /node_modules\/sinon\//
+                    /node_modules\/sinon\//,
+                    /node_modules\/jquery\//
                 ]
-            }
+            },
+            plugins: [
+                new webpack.optimize.LimitChunkCountPlugin(
+                    {
+                        maxChunks: 1
+                    }
+                )
+            ]
         },
-
         // number of browsers to run at once
         concurrency: Infinity
     });
